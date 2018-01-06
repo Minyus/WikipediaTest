@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Wikipedia Test</string>
+    <string name="error_default_msg">An error has occurred</string>
+</resources>
