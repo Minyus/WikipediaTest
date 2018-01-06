@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Wikipedia Test</string>
     <string name="error_default_msg">An error has occurred</string>
+    <string name="search_hint">Type for searching</string>
+    <string name="empty_searching">No results found</string>
 </resources>
