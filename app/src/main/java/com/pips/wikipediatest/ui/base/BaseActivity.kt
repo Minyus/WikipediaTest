@@ -9,7 +9,6 @@ import org.jetbrains.anko.longToast
 
 
 abstract class BaseActivity : AppCompatActivity() {
-    abstract val layoutResId: Int
 
     abstract fun buildAnkoLayout()
 
@@ -19,7 +18,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layoutResId)
         buildAnkoLayout()
         onCreateActivity()
     }
