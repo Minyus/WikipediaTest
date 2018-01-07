@@ -13,10 +13,10 @@ object SearchDs : LiveData<List<Page>>() {
             "action" to "query",
             "formatversion" to 2,
             "generator" to "prefixsearch",
-            "gpslimit" to 10,
+            "gpslimit" to 20,
             "prop" to "pageimages|pageterms",
             "piprop" to "thumbnail",
-            "pithumbsize" to 50,
+            "pithumbsize" to 150,
             "pilimit" to 10,
             "redirects" to "",
             "wbptterms" to "description",
@@ -24,8 +24,13 @@ object SearchDs : LiveData<List<Page>>() {
     )
 
     fun getArticles(title: String) {
-        pagesQueryList.add("gpssearch" to title)
+        if (title.isBlank()) value = emptyList()
+        else{
+            pagesQueryList.add("gpssearch" to title)
 
-        baseUrl.httpGet(pagesQueryList).responseObject<QueryResponse> { _, _, result -> value = result.get().query?.pages }
+            baseUrl.httpGet(pagesQueryList).responseObject<QueryResponse> { _, _, result ->
+                result.get().query?.pages?.let { value = it } ?: let { value = emptyList() }
+            }
+        }
     }
 }

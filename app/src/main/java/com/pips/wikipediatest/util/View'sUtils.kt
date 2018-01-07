@@ -12,8 +12,8 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 
 
-fun TextView.centerGravity() {
-    gravity = Gravity.CENTER
+fun TextView.centerHorizontalGravity() {
+    gravity = Gravity.CENTER_HORIZONTAL
 }
 
 fun View.visible() {

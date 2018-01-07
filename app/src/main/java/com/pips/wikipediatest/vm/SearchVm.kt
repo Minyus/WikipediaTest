@@ -8,7 +8,5 @@ class SearchVm : ViewModel() {
 
     val searchResultMld = SearchDs
 
-    fun getArticles(text: String) {
-        text.takeIf { it.isNotBlank() }?.let { SearchDs.getArticles(text) }
-    }
+    fun getArticles(text: String) { SearchDs.getArticles(text) }
 }

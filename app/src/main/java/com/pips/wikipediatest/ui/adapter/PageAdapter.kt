@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.item_page.view.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
-class PageAdapter(val pages: List<Page>, val onItemClick: (Page) -> Unit) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
+class PageAdapter(private val pages: List<Page>, val onItemClick: (Page) -> Unit) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(pages[position], onItemClick)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit = holder.bind(pages[position], onItemClick)
 
     override fun getItemCount() = pages.size
 
@@ -21,12 +21,13 @@ class PageAdapter(val pages: List<Page>, val onItemClick: (Page) -> Unit) : Recy
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(page: Page, onItemClick: (Page) -> Unit) = with(itemView) {
-            onClick { onItemClick(page) }
-            imvPage.loadImage(page.thumbnail?.source)
-            tvItemPageTitle.text = page.title
-            tvItemPageDescription.text = page.terms?.description?.get(0)
+        fun bind(page: Page, onItemClick: (Page) -> Unit) {
+            with(itemView) {
+                onClick { onItemClick(page) }
+                page.thumbnail?.source?.let { imvPage.loadImage(it) }
+                tvItemPageTitle.text = page.title
+                page.terms?.description?.get(0)?.let { tvItemPageDescription.text = it }
+            }
         }
-
     }
 }
