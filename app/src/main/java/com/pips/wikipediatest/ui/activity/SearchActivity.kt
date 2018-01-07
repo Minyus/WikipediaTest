@@ -23,6 +23,7 @@ class SearchActivity : BaseActivity() {
     lateinit var emptyView: TextView
     lateinit var startView: ImageView
     lateinit var fullView: RecyclerView
+    lateinit var errorView: TextView
 
     lateinit var searchVm: SearchVm
 
@@ -33,7 +34,15 @@ class SearchActivity : BaseActivity() {
 
             editText {
                 hint = getString(R.string.search_hint)
-                textChangedListener { onTextChanged { charSequence, _, _, _ -> searchVm.getArticles(charSequence.toString()) } }
+                textChangedListener {
+                    onTextChanged { charSequence, _, _, _ ->
+                        if (isNetworkAvailable()) searchVm.getArticles(charSequence.toString())
+                        else {
+                            setErrorView()
+                            displayErrorMsg(getString(R.string.error_no_internet))
+                        }
+                    }
+                }
             }
             emptyView = textView(R.string.empty_searching) { centerHorizontalGravity() }.lparams(matchParent, matchParent)
             startView = imageView(R.drawable.ic_wikipedia).lparams(dip(100), dip(100), weight = 1F)
@@ -43,6 +52,7 @@ class SearchActivity : BaseActivity() {
                 setHasFixedSize(true)
                 addDivider(llManager)
             }.lparams(matchParent, matchParent)
+            errorView = textView { centerHorizontalGravity() }.lparams(matchParent, matchParent)
         }
     }
 
@@ -50,13 +60,22 @@ class SearchActivity : BaseActivity() {
         setStartView()
 
         searchVm = getViewModel()
-        searchVm.searchResultMld.observe(this, Observer { pages ->
-            when {
-                pages == null -> setStartView()
-                pages.isEmpty() -> setStartView()
-                else -> {
-                    setFullView()
-                    setRvAdapter(pages)
+        searchVm.searchResultMld.observe(this, Observer { outcome ->
+            when (outcome) {
+                is Error -> {
+                    setErrorView()
+                    displayErrorMsg(outcome.errorMsg)
+                }
+                is Content<*> -> {
+                    val pages: List<Page>? = outcome.data as? List<Page>
+                    when {
+                        pages == null -> setStartView()
+                        pages.isEmpty() -> setEmptyView()
+                        else -> {
+                            setFullView()
+                            setRvAdapter(pages)
+                        }
+                    }
                 }
             }
         })
@@ -72,17 +91,31 @@ class SearchActivity : BaseActivity() {
         emptyView.visible()
         startView.gone()
         fullView.gone()
+        errorView.gone()
     }
 
     private fun setStartView() {
         emptyView.gone()
         startView.visible()
         fullView.gone()
+        errorView.gone()
     }
 
     private fun setFullView() {
         emptyView.gone()
         startView.gone()
         fullView.visible()
+        errorView.gone()
+    }
+
+    private fun setErrorView() {
+        emptyView.gone()
+        startView.gone()
+        fullView.gone()
+        errorView.visible()
+    }
+
+    private fun displayErrorMsg(errorMsg: String?) {
+        errorView.text = errorMsg ?: getString(R.string.error_msg_common)
     }
 }

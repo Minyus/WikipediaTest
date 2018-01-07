@@ -4,4 +4,6 @@
     <string name="search_hint">Type for searching</string>
     <string name="empty_searching">No results found</string>
     <string name="go">Go</string>
+    <string name="error_msg_common">An error has occurred</string>
+    <string name="error_no_internet">Internet connection is not available</string>
 </resources>
