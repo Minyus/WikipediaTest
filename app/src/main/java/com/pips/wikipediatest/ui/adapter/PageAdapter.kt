@@ -13,11 +13,11 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class PageAdapter(private val pages: List<Page>, val onItemClick: (Page) -> Unit) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit = holder.bind(pages[position], onItemClick)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(pages[position], onItemClick)
 
     override fun getItemCount() = pages.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.item_page))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.item_page))
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
