@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvItemPageTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imvPage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title " />
+
+    <TextView
+        android:id="@+id/tvItemPageDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imvPage"
+        app:layout_constraintTop_toBottomOf="@+id/tvItemPageTitle"
+        tools:text="hgdhgvj kjdvfkn kjdfvkn dfjvkj yokldvj kjb jdrjvn kljdnkfnvkjdfjn lkdnfkvjn kljdhfvkkj " />
+
+    <ImageView
+        android:id="@+id/imvPage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_wikipedia" />
+</android.support.constraint.ConstraintLayout>

@@ -1,15 +1,14 @@
 package com.pips.wikipediatest.vm
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.pips.wikipediatest.util.Result
+import com.pips.wikipediatest.ds.SearchDs
 
 
 class SearchVm : ViewModel() {
 
-    val searchResultMld = MutableLiveData<Result>()
+    val searchResultMld = SearchDs
 
-    fun getArticles() {
-
+    fun getArticles(text: String) {
+        text.takeIf { it.isNotBlank() }?.let { SearchDs.getArticles(text) }
     }
 }
