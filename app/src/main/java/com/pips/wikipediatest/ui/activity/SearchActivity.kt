@@ -4,8 +4,10 @@ import android.arch.lifecycle.Observer
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import com.jakewharton.rxbinding2.widget.RxTextView
 import com.pips.wikipediatest.R
 import com.pips.wikipediatest.model.Page
 import com.pips.wikipediatest.ui.adapter.PageAdapter
@@ -15,34 +17,31 @@ import com.pips.wikipediatest.util.*
 import com.pips.wikipediatest.vm.SearchVm
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
-import org.jetbrains.anko.sdk25.coroutines.textChangedListener
+import java.util.concurrent.TimeUnit
 
 
 class SearchActivity : BaseActivity() {
 
-    lateinit var emptyView: TextView
-    lateinit var startView: ImageView
-    lateinit var fullView: RecyclerView
-    lateinit var errorView: TextView
-
-    lateinit var searchVm: SearchVm
+    private lateinit var emptyView: TextView
+    private lateinit var startView: ImageView
+    private lateinit var fullView: RecyclerView
+    private lateinit var errorView: TextView
+    private lateinit var searchVm: SearchVm
+    private lateinit var etSearch: EditText
 
     override fun buildAnkoLayout() {
         verticalLayout {
             padding = dip(16)
             gravity = Gravity.CENTER
 
-            editText {
+            etSearch = editText {
                 hint = getString(R.string.search_hint)
-                textChangedListener {
-                    onTextChanged { charSequence, _, _, _ ->
-                        if (isNetworkAvailable()) searchVm.getArticles(charSequence.toString())
-                        else {
-                            setErrorView()
-                            displayErrorMsg(getString(R.string.error_no_internet))
-                        }
-                    }
-                }
+                singleLine = true
+                RxTextView.textChanges(this)
+                        .skipInitialValue()
+                        .debounce(300, TimeUnit.MILLISECONDS)
+                        .map { it.toString() }
+                        .subscribe { searchVm.getArticles(it) }
             }
             emptyView = textView(R.string.empty_searching) { centerHorizontalGravity() }.lparams(matchParent, matchParent)
             startView = imageView(R.drawable.ic_wikipedia).lparams(dip(100), dip(100), weight = 1F)
@@ -60,20 +59,21 @@ class SearchActivity : BaseActivity() {
         setStartView()
 
         searchVm = getViewModel()
-        searchVm.searchResultMld.observe(this, Observer { outcome ->
-            when (outcome) {
-                is Error -> {
-                    setErrorView()
-                    displayErrorMsg(outcome.errorMsg)
-                }
-                is Content<*> -> {
-                    val pages: List<Page>? = outcome.data as? List<Page>
+        searchVm.searchResultMld.observe(this, Observer {
+            if (etSearch.text.toString().isBlank()) setStartView()
+            else {
+                it?.let { outcome ->
                     when {
-                        pages == null -> setStartView()
-                        pages.isEmpty() -> setEmptyView()
-                        else -> {
-                            setFullView()
-                            setRvAdapter(pages)
+                        outcome.state.isError -> {
+                            setErrorView()
+                            displayErrorMsg(outcome.errorMsg)
+                        }
+                        outcome.state.isSuccess -> {
+                            if (outcome.data == null) setEmptyView()
+                            else {
+                                setFullView()
+                                setRvAdapter(outcome.data)
+                            }
                         }
                     }
                 }
