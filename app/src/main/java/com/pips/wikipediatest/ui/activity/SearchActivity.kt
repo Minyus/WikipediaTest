@@ -59,7 +59,7 @@ class SearchActivity : BaseActivity() {
         setStartView()
 
         searchVm = getViewModel()
-        searchVm.searchResultMld.observe(this, Observer {
+        searchVm.searchResultLd.observe(this, Observer {
             if (etSearch.text.toString().isBlank()) setStartView()
             else {
                 it?.let { outcome ->

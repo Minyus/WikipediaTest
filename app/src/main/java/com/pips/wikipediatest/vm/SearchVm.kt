@@ -6,19 +6,7 @@ import com.pips.wikipediatest.livedatas.ArticlesLd
 
 class SearchVm : ViewModel() {
 
-    val searchResultMld = ArticlesLd
+    val searchResultLd = ArticlesLd
 
-    fun getArticles(text: String) {
-        searchResultMld.getArticles(text)
-//        when {
-//            charSequence.isNullOrBlank() -> setStartView()
-//            isNetworkAvailable() -> {
-//
-//            }
-//            else -> {
-//                setErrorView()
-//                displayErrorMsg(getString(R.string.error_no_internet))
-//            }
-//        }
-    }
+    fun getArticles(text: String) = searchResultLd.getArticles(text)
 }
