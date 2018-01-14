@@ -1,5 +1,6 @@
 package com.pips.wikipediatest.ui.activity
 
+import android.animation.LayoutTransition
 import android.arch.lifecycle.Observer
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -7,8 +8,8 @@ import android.view.Gravity
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import com.jakewharton.rxbinding2.widget.RxTextView
 import com.pips.wikipediatest.R
+import com.pips.wikipediatest.lifecycleObserver.RxEtSearchObserver
 import com.pips.wikipediatest.model.Page
 import com.pips.wikipediatest.ui.adapter.PageAdapter
 import com.pips.wikipediatest.ui.base.BaseActivity
@@ -17,7 +18,6 @@ import com.pips.wikipediatest.util.*
 import com.pips.wikipediatest.vm.SearchVm
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
-import java.util.concurrent.TimeUnit
 
 
 class SearchActivity : BaseActivity() {
@@ -31,17 +31,12 @@ class SearchActivity : BaseActivity() {
 
     override fun buildAnkoLayout() {
         verticalLayout {
+            layoutTransition = LayoutTransition()
             padding = dip(16)
             gravity = Gravity.CENTER
-
             etSearch = editText {
                 hint = getString(R.string.search_hint)
                 singleLine = true
-                RxTextView.textChanges(this)
-                        .skipInitialValue()
-                        .debounce(300, TimeUnit.MILLISECONDS)
-                        .map { it.toString() }
-                        .subscribe { searchVm.getArticles(it) }
             }
             emptyView = textView(R.string.empty_searching) { centerHorizontalGravity() }.lparams(matchParent, matchParent)
             startView = imageView(R.drawable.ic_wikipedia).lparams(dip(100), dip(100), weight = 1F)
@@ -57,28 +52,37 @@ class SearchActivity : BaseActivity() {
 
     override fun onCreateActivity() {
         setStartView()
+        createSearchVm()
+        addRxSearchObserver()
+    }
 
-        searchVm = getViewModel()
-        searchVm.searchResultLd.observe(this, Observer {
-            if (etSearch.text.toString().isBlank()) setStartView()
-            else {
-                it?.let { outcome ->
-                    when {
-                        outcome.state.isError -> {
-                            setErrorView()
-                            displayErrorMsg(outcome.errorMsg)
-                        }
-                        outcome.state.isSuccess -> {
-                            if (outcome.data == null) setEmptyView()
-                            else {
-                                setFullView()
-                                setRvAdapter(outcome.data)
+    private fun createSearchVm(){
+        searchVm = getViewModel<SearchVm>().apply {
+            searchResultLd.observe(this@SearchActivity, Observer {
+                if (etSearch.text.toString().isBlank()) setStartView()
+                else {
+                    it?.let { outcome ->
+                        when {
+                            outcome.state.isError -> {
+                                setErrorView()
+                                displayErrorMsg(outcome.errorMsg)
+                            }
+                            outcome.state.isSuccess -> {
+                                if (outcome.data == null) setEmptyView()
+                                else {
+                                    setFullView()
+                                    setRvAdapter(outcome.data)
+                                }
                             }
                         }
                     }
                 }
-            }
-        })
+            })
+        }
+    }
+
+    private fun addRxSearchObserver(){
+        lifecycle.addObserver(RxEtSearchObserver(etSearch, searchVm))
     }
 
     private fun setRvAdapter(pages: List<Page>) {
