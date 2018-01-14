@@ -1,6 +1,5 @@
 package com.pips.wikipediatest.ds.api
 
-import com.pips.wikipediatest.ds.baseWikiUrlApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -1,11 +1,10 @@
 package com.pips.wikipediatest.ds.api
 
-import com.pips.wikipediatest.ds.*
 import com.pips.wikipediatest.model.QueryResponse
 import io.reactivex.Single
 
 
-object ApiDataSource {
+internal object ApiDataSource {
     private val wikiApiService: WikiApiService = retrofitObject.create(WikiApiService::class.java)
 
     fun getArticles(title: String): Single<QueryResponse> = wikiApiService.getArticles(action_query,

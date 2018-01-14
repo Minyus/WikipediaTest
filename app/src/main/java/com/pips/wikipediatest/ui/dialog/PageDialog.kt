@@ -4,8 +4,7 @@ import android.graphics.Typeface
 import android.text.InputType
 import android.view.Gravity
 import com.pips.wikipediatest.R
-import com.pips.wikipediatest.ds.imageItemPageSize
-import com.pips.wikipediatest.ds.mainMobileWikiUrl
+import com.pips.wikipediatest.ds.api.mainMobileWikiUrl
 import com.pips.wikipediatest.model.Page
 import com.pips.wikipediatest.ui.base.BaseActivity
 import com.pips.wikipediatest.util.centerHorizontalGravity
@@ -13,6 +12,7 @@ import com.pips.wikipediatest.util.loadImage
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
+val imageItemPageSize = 150
 
 fun BaseActivity.buildPageDialog(page: Page) = alert {
     customView {
